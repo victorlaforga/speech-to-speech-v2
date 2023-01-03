@@ -1,0 +1,25 @@
+{
+  "name": "upwork",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "runServer": "export GOOGLE_APPLICATION_CREDENTIALS=careful-airfoil-372120-37289c1605a3.json && npm install && node node-index.js" 
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ompatel11/simple-speech-recognition.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ompatel11/simple-speech-recognition/issues"
+  },
+  "homepage": "https://github.com/ompatel11/simple-speech-recognition#readme",
+  "dependencies": {
+    "@google-cloud/text-to-speech": "^4.0.4",
+    "express": "^4.18.2",
+    "ibm-watson": "^7.1.2"
+  }
+}
