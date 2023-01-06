@@ -111,14 +111,28 @@ function appendUserMessage(message) {
 }
 
 function welcomeMessage() {
-
     setTimeout(async () => {
-        utterThis.text = "Hallo daar! Wij zijn Team Dolly en wij laten je elke dag als een trofee schijnen! Klik op de tab toets om te starten";
-        await alternateSpeak('speakAudio2').then(() => {
-            document.getElementsByClassName('chat-button')[0].click();
+        await new Promise(resolve => {
+            let url = `http://localhost:3000/audio-files/music.mp3`
+            let audio = new Audio(url);
+            audio.play().then(async () => {
+                document.getElementsByClassName('chat-button')[0].click()
+            });
+            audio.addEventListener('pause', async () => {
 
-        });
-    }, 100);
+                await alternateSpeak('speakAudio1')
+                await alternateSpeak('speakAudio2')
+            })
+            setTimeout(() => {
+                audio.pause()
+                audio.currentTime = 0;
+                return resolve();
+            }, 10000);
+
+        })
+    }, 0);
+
+
 
 }
 
@@ -154,11 +168,15 @@ let speakText = {
     'speakAudio7': 'audio7.mp3',
     'speakAudio8': 'audio8.mp3',
     'speakAudio9': 'audio9.mp3',
-
+    'productAudio1': 'audio 1 sample.mp3',
+    'productAudio2': 'audio 2 sample.mp3',
+    'productAudio3': 'audio 3 sample.mp3',
+    'notFound': 'audio niet verstaan.mp3',
+    'backgroundMusic': 'music.mp3',
 }
 async function alternateSpeak(speakAudio) {
     return new Promise(resolve => {
-        let url = `https://helpful-cocada-f803f1.netlify.app/audio-files/${speakText[speakAudio]}`
+        let url = `http://localhost:3000/audio-files/${speakText[speakAudio]}`
         let audio = new Audio(url);
         audio.play();
         audio.onended = () => {
@@ -169,7 +187,7 @@ async function alternateSpeak(speakAudio) {
 async function speak(text) {
     context = new AudioContext();
     request = new XMLHttpRequest();
-    request.open("GET", `https://helpful-cocada-f803f1.netlify.app/speak?speaktext=${text.text}&filename='test'`, true);
+    request.open("GET", `http://localhost:3000/speak?speaktext=${text.text}&filename='test'`, true);
     request.responseType = "arraybuffer";
 
     request.onerror = (error) => {
@@ -186,7 +204,6 @@ async function speak(text) {
                 // autoplay
                 source.start(0); // start was previously noteOn
                 source.onended = () => {
-                    console.log("Context ended");
                     return resolve();
                 };
             });
@@ -211,7 +228,6 @@ async function speak(text) {
 }
 
 async function startSpeechRecognition() {
-    recognition.start();
     recognition.onresult = async function (event) {
 
         const speechResult = event.results[0][0].transcript.toLowerCase();
@@ -225,8 +241,7 @@ async function startSpeechRecognition() {
 
 
 
-            if (!isSelectingSize && splitText.includes('maat') || splitText.includes('maten') || splitText.includes('opmaat')) {
-                console.log("IsSelecting Size " + isSelectingSize);
+            if (!isSelectingSize && splitText.includes('sizes') || splitText.includes('mate') || splitText.includes('maten')) {
                 utterThis.text =
                     `Welke maat heb normaal? ${matenList.toString()}`;
                 apiCall.maten = maten[splitText[j]];
@@ -242,7 +257,7 @@ async function startSpeechRecognition() {
                 // List the products
                 utterThis.text = `We hebben ${altTekstenProductAfbeeldingen.length} producten voor je gevonden.`;
                 createChatBotMessage(utterThis.text);
-                await alternateSpeak('speakAudio4');
+
 
                 for (let i = 0; i < altTekstenProductAfbeeldingen.length; i++) {
                     utterThis.text = altTekstenProductAfbeeldingen[i];
@@ -250,7 +265,9 @@ async function startSpeechRecognition() {
                     // Do we need to speak the product name?
                     // await speak(utterThis);
                 }
-
+                await alternateSpeak('productAudio1');
+                await alternateSpeak('productAudio2');
+                await alternateSpeak('productAudio3');
                 utterThis.text = `Welk product nummer wil je bekijken?`;
                 createChatBotMessage(utterThis.text);
                 await alternateSpeak('speakAudio5');
@@ -260,13 +277,11 @@ async function startSpeechRecognition() {
             }
 
             if (!isSelectingColor && speechResult.includes("kleuren") || speechResult.includes("kleur") || speechResult.includes("color")) {
-                console.log("IsSelecting Color " + isSelectingColor);
                 utterThis.text = `Wij hebben deze mooie kleuren: ${kleurenList.toString()} ! Welke is voor jou?`;
                 createChatBotMessage(utterThis.text);
                 recognition.stop();
                 await alternateSpeak('speakAudio6');
                 filterBy.color = true;
-                console.log("Setting filterBy.color to true");
                 matchFound = true;
             }
             if (speechResult.includes(kleuren[splitText[j]]) && filterBy.color == true) {
@@ -282,8 +297,11 @@ async function startSpeechRecognition() {
                     // Audio file is not given for this step
                     // await speak(utterThis);
                 }
-
                 utterThis.text = `Welk product nummer wil je bekijken?`;
+
+                await alternateSpeak('productAudio1');
+                await alternateSpeak('productAudio2');
+                await alternateSpeak('productAudio3');
                 createChatBotMessage(utterThis.text);
                 await alternateSpeak('speakAudio7');
                 apiCall.kleuren = kleuren[splitText[j]];
@@ -292,7 +310,6 @@ async function startSpeechRecognition() {
 
 
             }
-            console.log("productFound: " + textToNumber[splitText[j]], splitText[j]);
 
             if (speechResult.includes(productKeys[splitText[j]]) || altTekstenProductAfbeeldingen.includes(splitText) && productFound == true) {
                 utterThis.text = "Top! Wil je naar de productpagina?"
@@ -320,6 +337,7 @@ async function startSpeechRecognition() {
             createChatBotMessage(utterThis.text);
             // Audio file is not given for this step
             // await speak(utterThis);
+            await alternateSpeak('notFound')
             matchFound = false;
         }
     }
@@ -350,31 +368,25 @@ $('.chat-button').on('click', async function () {
     // });
     utterThis.text = "Zou je op maat of kleur naar je favoriete product willen zoeken?";
     createChatBotMessage(utterThis.text);
-    await alternateSpeak('speakAudio1').then(() => {
-        isListening = true;
-        startSpeechRecognition();
-    });
+
 
 });
 
 document.getElementById("mic").onclick = async () => {
     if (isSpeaking) return;
-    if (isListening) {
-        if (document.getElementById("mic").classList.contains("fa-microphone")) {
-            document.getElementById("mic").classList.remove("fa-microphone");
-            document.getElementById("mic").classList.add("fa-microphone-slash");
-            isListening = true;
-            console.log("Setting true");
-            recognition.stop();
-        }
-
+    if (document.getElementById("mic").classList.contains("fa-microphone")) {
+        document.getElementById("mic").classList.remove("fa-microphone");
+        document.getElementById("mic").classList.add("fa-microphone-slash");
+        isListening = false;
+        recognition.stop();
     }
     else {
         if (document.getElementById("mic").classList.contains("fa-microphone-slash")) {
             document.getElementById("mic").classList.remove("fa-microphone-slash");
             document.getElementById("mic").classList.add("fa-microphone");
-            isListening = false;
-            console.log("Setting false");
+            isListening = true;
+            recognition.stop()
+            startSpeechRecognition();
             recognition.start();
         }
     }
