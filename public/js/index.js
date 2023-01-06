@@ -158,7 +158,7 @@ let speakText = {
 }
 async function alternateSpeak(speakAudio) {
     return new Promise(resolve => {
-        let url = `http://localhost:3000/audio-files/${speakText[speakAudio]}`
+        let url = `https://helpful-cocada-f803f1.netlify.app/audio-files/${speakText[speakAudio]}`
         let audio = new Audio(url);
         audio.play();
         audio.onended = () => {
@@ -169,7 +169,7 @@ async function alternateSpeak(speakAudio) {
 async function speak(text) {
     context = new AudioContext();
     request = new XMLHttpRequest();
-    request.open("GET", `http://localhost:3000/speak?speaktext=${text.text}&filename='test'`, true);
+    request.open("GET", `https://helpful-cocada-f803f1.netlify.app/speak?speaktext=${text.text}&filename='test'`, true);
     request.responseType = "arraybuffer";
 
     request.onerror = (error) => {
