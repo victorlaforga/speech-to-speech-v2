@@ -112,14 +112,14 @@ function appendUserMessage(message) {
 function welcomeMessage() {
     // http://localhost:3000
     setTimeout(async () => {
-        let url = `https://helpful-cocada-f803f1.netlify.app/audio-files/music.mp3`
+        let url = `https://speech-to-speech-chatbot.netlify.app/audio-files/music.mp3`
         let audio = new Audio(url);
         audio.play().then(async () => {
             document.getElementsByClassName('chat-button')[0].click()
         });
         setTimeout(async () => {
-            let speakAudio1 = new Audio('https://helpful-cocada-f803f1.netlify.app/audio-files/audio1.mp3');
-            let speakAudio2 = new Audio('https://helpful-cocada-f803f1.netlify.app/audio-files/audio2.mp3');
+            let speakAudio1 = new Audio('https://speech-to-speech-chatbot.netlify.app/audio-files/audio1.mp3');
+            let speakAudio2 = new Audio('https://speech-to-speech-chatbot.netlify.app/audio-files/audio2.mp3');
             speakAudio1.volume = 1.0;
             speakAudio2.volume = 1.0;
             speakAudio1.play();
@@ -183,7 +183,7 @@ let speakText = {
 }
 async function alternateSpeak(speakAudio) {
     return new Promise(resolve => {
-        let url = `https://helpful-cocada-f803f1.netlify.app/audio-files/${speakText[speakAudio]}`
+        let url = `https://speech-to-speech-chatbot.netlify.app/audio-files/${speakText[speakAudio]}`
         let audio = new Audio(url);
         audio.play();
         audio.onended = () => {
@@ -194,7 +194,7 @@ async function alternateSpeak(speakAudio) {
 async function speak(text) {
     context = new AudioContext();
     request = new XMLHttpRequest();
-    request.open("GET", `https://helpful-cocada-f803f1.netlify.app/speak?speaktext=${text.text}&filename='test'`, true);
+    request.open("GET", `https://speech-to-speech-chatbot.netlify.app/speak?speaktext=${text.text}&filename='test'`, true);
     request.responseType = "arraybuffer";
 
     request.onerror = (error) => {
