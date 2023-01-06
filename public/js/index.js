@@ -113,7 +113,7 @@ function appendUserMessage(message) {
 function welcomeMessage() {
     setTimeout(async () => {
         await new Promise(resolve => {
-            let url = `http://localhost:3000/audio-files/music.mp3`
+            let url = `https://helpful-cocada-f803f1.netlify.app/audio-files/music.mp3`
             let audio = new Audio(url);
             audio.play().then(async () => {
                 document.getElementsByClassName('chat-button')[0].click()
@@ -187,7 +187,7 @@ async function alternateSpeak(speakAudio) {
 async function speak(text) {
     context = new AudioContext();
     request = new XMLHttpRequest();
-    request.open("GET", `http://localhost:3000/speak?speaktext=${text.text}&filename='test'`, true);
+    request.open("GET", `https://helpful-cocada-f803f1.netlify.app/speak?speaktext=${text.text}&filename='test'`, true);
     request.responseType = "arraybuffer";
 
     request.onerror = (error) => {
