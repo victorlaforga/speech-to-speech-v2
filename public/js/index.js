@@ -65,28 +65,27 @@ let matenList = [
 
 let altTekstenProductAfbeeldingen = [
     // Change one two three into Dutch 
-    'Rood Jeans Product',
-    'Purple Jeans ',
-    'Geel Jeans',
+    "1 - Active Sport Legging: De Dolly Sportsleggings zijn gesneden uit een hoogwaardige Italiaanse sportstof en hebben een glanzende afwerking voor de ultieme 80's look. Dit high-rise paar heeft een brede tailleband die de kern gladstrijkt en ondersteunt. Draag ze met de Dolly Sports BH en sneakers. Je kunt echt gaan sporten maar ook de legging rocken voor een actieve dag. Het model draagt maat extra small en is 1m70.",
+    "2 - Nylon Sports Sweater: Deze nylon sporttrui wordt je nieuwe favoriete item tijdens het stelen van de show tijdens een workout buiten of tijdens een drankje. Sportief en layback qua pasvorm, stijlvol qua uiterlijk, met ons DS logo op de borst en Dolly logo op de rug. Een verborgen zak is toegevoegd in de zijnaad om je waardevolle spullen te bewaren tijdens de training. Combineer met de Classic trackpants of de Active Sportslegging. Het model draagt maat small en is 1m77.",
+    "3 - Team Dolly Trackpants: De DS joggingbroek is een klassieker in je garderobe. Draag hem thuis, naar de sportschool of in de stad. Voorzien van heupzakken, DS-borduursel en een elastische tailleband met een flexibel trekkoord voor een comfortabele pasvorm. Combineer hem met het DS sweatshirt voor de volledige Dolly-look of mix hem. Rol de broekspijpen op als de lengte te lang is of combineer hem met onze DS-sokken. Dit kledingstuk is geverfd waardoor het na verloop van tijd een verwassen, vintage look krijgt. Het model is 1,75 en draagt maat S. 100% katoen, binnenstebuiten wassen op max 40 graden, niet strijken, lage temperatuur drogen. Dit is een limited edition en wordt binnen 48 uur naar u verzonden. Omdat we een limited edition merk zijn hebben we geen voorraad. Daarom kunnen we niet altijd een omruiling in maat of kleur honoreren.",
+    "Welk product nummer wil je bekijken?"
+
 
 ]
 let productKeys = {
-    "one": "one",
-    "two": "two",
-    "three": "three",
-    "four": "four",
-    "five": "five",
-    "six": "six",
+    "1": "1",
+    "2": "2",
+    "3": "3",
 }
-let textToNumber = {
-    // Change one two three into Dutch 
+// let textToNumber = {
+//     // Change one two three into Dutch 
 
-    "one": altTekstenProductAfbeeldingen[0],
-    "two": altTekstenProductAfbeeldingen[1],
-    "three": altTekstenProductAfbeeldingen[2],
+//     "one": altTekstenProductAfbeeldingen[0],
+//     "two": altTekstenProductAfbeeldingen[1],
+//     "three": altTekstenProductAfbeeldingen[2],
 
 
-}
+// }
 
 function createChatBotMessage(message) {
     let messageElement = document.createElement("div");
@@ -111,27 +110,35 @@ function appendUserMessage(message) {
 }
 
 function welcomeMessage() {
+    // http://localhost:3000
     setTimeout(async () => {
-        await new Promise(resolve => {
-            let url = `https://helpful-cocada-f803f1.netlify.app/audio-files/music.mp3`
-            let audio = new Audio(url);
-            audio.play().then(async () => {
-                document.getElementsByClassName('chat-button')[0].click()
+        let url = `https://helpful-cocada-f803f1.netlify.app/audio-files/music.mp3`
+        let audio = new Audio(url);
+        audio.play().then(async () => {
+            document.getElementsByClassName('chat-button')[0].click()
+        });
+        setTimeout(async () => {
+            let speakAudio1 = new Audio('https://helpful-cocada-f803f1.netlify.app/audio-files/audio1.mp3');
+            let speakAudio2 = new Audio('https://helpful-cocada-f803f1.netlify.app/audio-files/audio2.mp3');
+            speakAudio1.volume = 1.0;
+            speakAudio2.volume = 1.0;
+            speakAudio1.play();
+            speakAudio1.addEventListener('ended', function() {
+                speakAudio2.play();
             });
-            audio.addEventListener('pause', async () => {
-
-                await alternateSpeak('speakAudio1')
-                await alternateSpeak('speakAudio2')
-            })
-            setTimeout(() => {
-                audio.pause()
-                audio.currentTime = 0;
-                return resolve();
-            }, 10000);
-
-        })
+            let interval = setInterval(() => {
+                audio.volume -= 0.01;
+                if (audio.volume <= 0.04) {
+                    clearInterval(interval);
+                }
+            }, 50);
+        }, 10000);
     }, 0);
-
+    
+    
+    
+    
+    
 
 
 }
@@ -241,9 +248,9 @@ async function startSpeechRecognition() {
 
 
 
-            if (!isSelectingSize && splitText.includes('sizes') || splitText.includes('mate') || splitText.includes('maten')) {
+            if (!isSelectingSize && splitText.includes('maten') || splitText.includes('opmaat') || splitText.includes('maat')) {
                 utterThis.text =
-                    `Welke maat heb normaal? ${matenList.toString()}`;
+                    `Welke van de volgende maten draag je normaliter voor kleding en broeken? Small, Medium, Large of Extra Large`;
                 apiCall.maten = maten[splitText[j]];
                 createChatBotMessage(utterThis.text);
                 recognition.stop();
@@ -255,7 +262,7 @@ async function startSpeechRecognition() {
 
             if (splitText.includes(maten[splitText[j]]) && filterBy.size == true) {
                 // List the products
-                utterThis.text = `We hebben ${altTekstenProductAfbeeldingen.length} producten voor je gevonden.`;
+                utterThis.text = `We hebben 3 producten voor je gevonden.`;
                 createChatBotMessage(utterThis.text);
 
 
@@ -265,6 +272,7 @@ async function startSpeechRecognition() {
                     // Do we need to speak the product name?
                     // await speak(utterThis);
                 }
+                await alternateSpeak('speakAudio4');
                 await alternateSpeak('productAudio1');
                 await alternateSpeak('productAudio2');
                 await alternateSpeak('productAudio3');
@@ -277,7 +285,7 @@ async function startSpeechRecognition() {
             }
 
             if (!isSelectingColor && speechResult.includes("kleuren") || speechResult.includes("kleur") || speechResult.includes("color")) {
-                utterThis.text = `Wij hebben deze mooie kleuren: ${kleurenList.toString()} ! Welke is voor jou?`;
+                utterThis.text = `Wij hebben deze mooie zomer kleuren voor je gevonden naar welke kleur gaat je voorkeur naar uit? De kleuren zijn: rood, groen, geel, paars of lila`;
                 createChatBotMessage(utterThis.text);
                 recognition.stop();
                 await alternateSpeak('speakAudio6');
@@ -286,7 +294,7 @@ async function startSpeechRecognition() {
             }
             if (speechResult.includes(kleuren[splitText[j]]) && filterBy.color == true) {
                 // List the products
-                utterThis.text = `We hebben ${altTekstenProductAfbeeldingen.length} producten voor je gevonden.`;
+                utterThis.text = `We hebben 3 producten voor je gevonden.`;
                 createChatBotMessage(utterThis.text);
                 // Audio file is not given for this step
                 // await speak(utterThis);
@@ -298,7 +306,7 @@ async function startSpeechRecognition() {
                     // await speak(utterThis);
                 }
                 utterThis.text = `Welk product nummer wil je bekijken?`;
-
+                await alternateSpeak('speakAudio4');
                 await alternateSpeak('productAudio1');
                 await alternateSpeak('productAudio2');
                 await alternateSpeak('productAudio3');
@@ -322,7 +330,7 @@ async function startSpeechRecognition() {
                 .kleuren != "" || apiCall.maten != "")) {
                 // Move to product page exit code follows
                 // This code only runs if product, size and color is selected by user and the item is available
-                utterThis.text = "Top! Ik breng je naar de productpagina."
+                utterThis.text = "Top! Ik breng je naar de productpagina. Ik hoop je fijn geholpen te hebben vandaag, tot snel! Doei doei!"
                 createChatBotMessage(utterThis.text);
                 await alternateSpeak('speakAudio9');
                 recognition.stop();
@@ -333,7 +341,7 @@ async function startSpeechRecognition() {
 
         }
         if (!matchFound) {
-            utterThis.text = "Dat heb ik niet verstaan, kun je het alsjeblieft nog een keer zeggen."
+            utterThis.text = "Dat heb ik niet verstaan, kun je antwoord geven op de vorige vraag."
             createChatBotMessage(utterThis.text);
             // Audio file is not given for this step
             // await speak(utterThis);
