@@ -14,8 +14,15 @@
 </head>
 
 <body>
-    <button class="start-btn" onclick="welcomeMessage()" tabindex="0"> Start </button>
+    <div class="grid-container">
+        <div class="grid-item">
+            <button class="start-btn" onclick="welcomeMessage()" tabindex="0"> Start </button>
+            <button class="btn-mic">
+                <i class="send btn-white btn-animate fa-solid fa-microphone-slash" id="mic"></i>
+            </button>
+        </div>
 
+    </div>
     <div class="chat-box">
         <div class="chat-box-header">
             <h3>Bericht ons</h3>
@@ -48,9 +55,7 @@
         </div>
     </div>
     <audio src="" style="display:hidden;"></audio>
-    <button class="btn-mic">
-        <i class="send btn-white btn-animate fa-solid fa-microphone-slash" id="mic"></i>
-    </button>
+
 </body>
 
 <script src="/js/index.js" defer></script>
