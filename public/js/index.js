@@ -69,8 +69,6 @@ let altTekstenProductAfbeeldingen = [
     "2 - Nylon Sports Sweater: Deze nylon sporttrui wordt je nieuwe favoriete item tijdens het stelen van de show tijdens een workout buiten of tijdens een drankje. Sportief en layback qua pasvorm, stijlvol qua uiterlijk, met ons DS logo op de borst en Dolly logo op de rug. Een verborgen zak is toegevoegd in de zijnaad om je waardevolle spullen te bewaren tijdens de training. Combineer met de Classic trackpants of de Active Sportslegging. Het model draagt maat small en is 1m77.",
     "3 - Team Dolly Trackpants: De DS joggingbroek is een klassieker in je garderobe. Draag hem thuis, naar de sportschool of in de stad. Voorzien van heupzakken, DS-borduursel en een elastische tailleband met een flexibel trekkoord voor een comfortabele pasvorm. Combineer hem met het DS sweatshirt voor de volledige Dolly-look of mix hem. Rol de broekspijpen op als de lengte te lang is of combineer hem met onze DS-sokken. Dit kledingstuk is geverfd waardoor het na verloop van tijd een verwassen, vintage look krijgt. Het model is 1,75 en draagt maat S. 100% katoen, binnenstebuiten wassen op max 40 graden, niet strijken, lage temperatuur drogen. Dit is een limited edition en wordt binnen 48 uur naar u verzonden. Omdat we een limited edition merk zijn hebben we geen voorraad. Daarom kunnen we niet altijd een omruiling in maat of kleur honoreren.",
     "Welk product nummer wil je bekijken?"
-
-
 ]
 let productKeys = {
     "1": "1",
@@ -110,6 +108,7 @@ function appendUserMessage(message) {
 }
 
 function welcomeMessage() {
+    isSpeaking = true;
     // http://localhost:3000
     setTimeout(async () => {
         let url = `https://speech-to-speech-chatbot.netlify.app/audio-files/music.mp3`
@@ -123,7 +122,7 @@ function welcomeMessage() {
             speakAudio1.volume = 1.0;
             speakAudio2.volume = 1.0;
             speakAudio1.play();
-            speakAudio1.addEventListener('ended', function() {
+            speakAudio1.addEventListener('ended', function () {
                 speakAudio2.play();
             });
             let interval = setInterval(() => {
@@ -134,13 +133,6 @@ function welcomeMessage() {
             }, 50);
         }, 10000);
     }, 0);
-    
-    
-    
-    
-    
-
-
 }
 
 
@@ -187,6 +179,7 @@ async function alternateSpeak(speakAudio) {
         let audio = new Audio(url);
         audio.play();
         audio.onended = () => {
+            isSpeaking = false;
             return resolve();
         }
     })
@@ -217,21 +210,7 @@ async function speak(text) {
 
         };
     });
-    // isSpeaking = true;
-    // console.log(text.text);
-    // utterThis.text = text.text;
-    // synth.speak(utterThis);
-    // utterThis.onstart = function (event) {
-    //     console.log("Started speaking");
-    // }
-    // return new Promise(resolve => {
-    //     utterThis.onend = () => {
-    //         synth.cancel();
-    //         isSpeaking = false;
-    //         return resolve();
-    //     };
 
-    // });
 }
 
 async function startSpeechRecognition() {
@@ -269,12 +248,18 @@ async function startSpeechRecognition() {
                 for (let i = 0; i < altTekstenProductAfbeeldingen.length; i++) {
                     utterThis.text = altTekstenProductAfbeeldingen[i];
                     createChatBotMessage(utterThis.text);
-                    // Do we need to speak the product name?
-                    // await speak(utterThis);
                 }
+
+                isSpeaking = true;
                 await alternateSpeak('speakAudio4');
+
+                isSpeaking = true;
                 await alternateSpeak('productAudio1');
+
+                isSpeaking = true;
                 await alternateSpeak('productAudio2');
+
+                isSpeaking = true;
                 await alternateSpeak('productAudio3');
                 utterThis.text = `Welk product nummer wil je bekijken?`;
                 createChatBotMessage(utterThis.text);
@@ -288,6 +273,8 @@ async function startSpeechRecognition() {
                 utterThis.text = `Wij hebben deze mooie zomer kleuren voor je gevonden naar welke kleur gaat je voorkeur naar uit? De kleuren zijn: rood, groen, geel, paars of lila`;
                 createChatBotMessage(utterThis.text);
                 recognition.stop();
+
+                isSpeaking = true;
                 await alternateSpeak('speakAudio6');
                 filterBy.color = true;
                 matchFound = true;
@@ -296,32 +283,38 @@ async function startSpeechRecognition() {
                 // List the products
                 utterThis.text = `We hebben 3 producten voor je gevonden.`;
                 createChatBotMessage(utterThis.text);
-                // Audio file is not given for this step
-                // await speak(utterThis);
 
                 for (let i = 0; i < altTekstenProductAfbeeldingen.length; i++) {
                     utterThis.text = altTekstenProductAfbeeldingen[i];
                     createChatBotMessage(utterThis.text);
-                    // Audio file is not given for this step
-                    // await speak(utterThis);
                 }
                 utterThis.text = `Welk product nummer wil je bekijken?`;
+                isSpeaking = true;
                 await alternateSpeak('speakAudio4');
+
+                isSpeaking = true;
                 await alternateSpeak('productAudio1');
+
+                isSpeaking = true;
                 await alternateSpeak('productAudio2');
+
+                isSpeaking = true;
                 await alternateSpeak('productAudio3');
                 createChatBotMessage(utterThis.text);
+
+                isSpeaking = true;
                 await alternateSpeak('speakAudio7');
                 apiCall.kleuren = kleuren[splitText[j]];
                 matchFound = true;
                 productFound = true;
-
 
             }
 
             if (speechResult.includes(productKeys[splitText[j]]) || altTekstenProductAfbeeldingen.includes(splitText) && productFound == true) {
                 utterThis.text = "Top! Wil je naar de productpagina?"
                 createChatBotMessage(utterThis.text);
+
+                isSpeaking = true;
                 await alternateSpeak('speakAudio8');
                 recognition.stop();
                 matchFound = true;
@@ -332,6 +325,8 @@ async function startSpeechRecognition() {
                 // This code only runs if product, size and color is selected by user and the item is available
                 utterThis.text = "Top! Ik breng je naar de productpagina. Ik hoop je fijn geholpen te hebben vandaag, tot snel! Doei doei!"
                 createChatBotMessage(utterThis.text);
+
+                isSpeaking = true;
                 await alternateSpeak('speakAudio9');
                 recognition.stop();
                 exit = true;
@@ -409,7 +404,11 @@ $('.chat-box .chat-box-header p').on('click', function () {
 document.onkeypress = function (e) {
     if (isSpeaking) return;
     e = e || window.event;
-    if (e.keyCode == 32) {
+    let el = document.getElementsByClassName('chat-box')[0];
+    console.log(el);
+    let isOpen = window.getComputedStyle(el).visibility === "visible" ? true : false;
+    console.log(isOpen);
+    if (e.keyCode == 32 && isOpen && !isSpeaking) {
         document.getElementById("mic").click();
     }
 }

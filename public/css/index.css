@@ -79,7 +79,6 @@ body {
 }
 
 .chat-box-body-send {
-    width: 250px;
     float: right;
     background: white;
     padding: 10px 20px;
@@ -89,14 +88,24 @@ body {
 }
 
 .btn-mic {
-    height: max-content;
-    width: max-content;
+    position: fixed;
+    left: 45%;
+    top: 38%;
+    width: 400px;
+    height: 10vh;
     border: none;
-    padding: 0 0px 10% 50%;
     font-size: 18px;
-    background: white;
+    background: orange;
     cursor: pointer;
+    display: block;
 }
+
+.btn-mic i {
+    background: orange;
+    flex: 1 1 auto;
+    flex-direction: column;
+}
+
 
 .chat-box-body-send p {
     margin: 0;
@@ -140,8 +149,12 @@ body {
 }
 
 .chat-box-footer {
+    flex: 1 1 auto;
     position: relative;
     display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
 }
 
 
@@ -168,13 +181,7 @@ body {
     outline: none;
 }
 
-.chat-box-footer .send {
-    vertical-align: middle;
-    align-items: center;
-    justify-content: center;
-    transform: translate(0px, 20px);
-    cursor: pointer;
-}
+
 
 .chat-button {
     padding: 25px 16px;
