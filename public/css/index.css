@@ -23,9 +23,10 @@ body {
 
 .start-btn {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.005);
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
+    border: none;
 }
 
 .chat-box {
@@ -99,8 +100,8 @@ body {
 }
 
 .btn-mic {
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
     border: none;
     font-size: 14px;
     background: orange;
@@ -332,5 +333,17 @@ body {
     100% {
         opacity: 1;
         transform: translateY(0px);
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    .start-btn {
+        height: 150px;
+        width: 150px;
+    }
+
+    .btn-mic {
+        height: 150px;
+        width: 150px;
     }
 }
