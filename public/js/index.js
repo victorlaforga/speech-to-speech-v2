@@ -108,7 +108,6 @@ function appendUserMessage(message) {
 }
 
 function welcomeMessage() {
-    isSpeaking = true;
     // http://localhost:3000
     setTimeout(async () => {
         let url = `https://speech-to-speech-chatbot.netlify.app/audio-files/music.mp3`
