@@ -23,8 +23,8 @@ body {
 
 .start-btn {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.005);
-    width: 200px;
-    height: 200px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
 }
 
@@ -99,10 +99,10 @@ body {
 }
 
 .btn-mic {
-    width: 200px;
-    height: 200px;
+    width: 100px;
+    height: 100px;
     border: none;
-    font-size: 18px;
+    font-size: 14px;
     background: orange;
     cursor: pointer;
     display: block;
