@@ -186,12 +186,12 @@ async function playAudio(speakAudio) {
         }
     })
 }
-async function alternateSpeak(speakAudio) {
+async function alternateSpeak(speakAudio, isStart) {
     await playAudio(speakAudio).then(() => {
-
-        recognition.start();
+        if (isStart) {
+            recognition.start();
+        }
     })
-
 }
 async function speak(text) {
     context = new AudioContext();
@@ -242,7 +242,7 @@ async function startSpeechRecognition() {
                 apiCall.maten = maten[splitText[j]];
                 createChatBotMessage(utterThis.text);
                 recognition.stop();
-                await alternateSpeak('speakAudio3')
+                await alternateSpeak('speakAudio3', true)
                 matchFound = true;
                 filterBy.size = true;
                 isSelectingSize = true;
@@ -260,19 +260,19 @@ async function startSpeechRecognition() {
                 }
 
                 isSpeaking = true;
-                await alternateSpeak('speakAudio4')
+                await alternateSpeak('speakAudio4', false)
 
                 isSpeaking = true;
-                await alternateSpeak('productAudio1');
+                await alternateSpeak('productAudio1', false);
 
                 isSpeaking = true;
-                await alternateSpeak('productAudio2');
+                await alternateSpeak('productAudio2', false);
 
                 isSpeaking = true;
-                await alternateSpeak('productAudio3');
+                await alternateSpeak('productAudio3', false);
                 utterThis.text = `Welk product nummer wil je bekijken?`;
                 createChatBotMessage(utterThis.text);
-                await alternateSpeak('speakAudio5')
+                await alternateSpeak('speakAudio5', true)
                 apiCall.maten = maten[splitText[j]];
                 matchFound = true;
                 productFound = true;
@@ -284,7 +284,7 @@ async function startSpeechRecognition() {
                 recognition.stop();
 
                 isSpeaking = true;
-                await alternateSpeak('speakAudio6')
+                await alternateSpeak('speakAudio6', true)
                 filterBy.color = true;
                 matchFound = true;
             }
@@ -299,20 +299,20 @@ async function startSpeechRecognition() {
                 }
                 utterThis.text = `Welk product nummer wil je bekijken?`;
                 isSpeaking = true;
-                await alternateSpeak('speakAudio4')
+                await alternateSpeak('speakAudio4', false)
 
                 isSpeaking = true;
-                await alternateSpeak('productAudio1');
+                await alternateSpeak('productAudio1', false);
 
                 isSpeaking = true;
-                await alternateSpeak('productAudio2');
+                await alternateSpeak('productAudio2', false);
 
                 isSpeaking = true;
-                await alternateSpeak('productAudio3');
+                await alternateSpeak('productAudio3', false);
                 createChatBotMessage(utterThis.text);
 
                 isSpeaking = true;
-                await alternateSpeak('speakAudio7')
+                await alternateSpeak('speakAudio7', true)
                 apiCall.kleuren = kleuren[splitText[j]];
                 matchFound = true;
                 productFound = true;
@@ -324,7 +324,7 @@ async function startSpeechRecognition() {
                 createChatBotMessage(utterThis.text);
 
                 isSpeaking = true;
-                await alternateSpeak('speakAudio8')
+                await alternateSpeak('speakAudio8', true)
                 recognition.stop();
                 matchFound = true;
             }
@@ -336,7 +336,7 @@ async function startSpeechRecognition() {
                 createChatBotMessage(utterThis.text);
 
                 isSpeaking = true;
-                await alternateSpeak('speakAudio9');
+                await alternateSpeak('speakAudio9', true);
                 recognition.stop();
                 exit = true;
                 matchFound = true;
@@ -349,7 +349,7 @@ async function startSpeechRecognition() {
             createChatBotMessage(utterThis.text);
             // Audio file is not given for this step
             // await speak(utterThis);
-            await alternateSpeak('notFound')
+            await alternateSpeak('notFound', true)
             matchFound = false;
         }
     }

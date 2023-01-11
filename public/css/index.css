@@ -7,13 +7,26 @@ body {
     font-family: Raleway;
 }
 
+.grid-container {
+    display: grid;
+    height: 100vh;
+    grid-template-columns: 1;
+}
+
+.grid-item {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    font-size: 30px;
+    text-align: start;
+}
+
 .start-btn {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.005);
-    width: 200px;
-    position: fixed;
-    left: 50%;
-    top: 50%;
-
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: none;
 }
 
 .chat-box {
@@ -55,7 +68,6 @@ body {
     font-family: ubuntu;
     font-weight: 400;
     float: left;
-    position: absolute;
     left: 25px;
 }
 
@@ -88,16 +100,15 @@ body {
 }
 
 .btn-mic {
-    position: fixed;
-    left: 45%;
-    top: 38%;
-    width: 400px;
-    height: 10vh;
+    width: 150px;
+    height: 150px;
     border: none;
-    font-size: 18px;
+    font-size: 14px;
     background: orange;
     cursor: pointer;
     display: block;
+    border-radius: 50%;
+    margin-left: 30%;
 }
 
 .btn-mic i {
@@ -322,5 +333,17 @@ body {
     100% {
         opacity: 1;
         transform: translateY(0px);
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    .start-btn {
+        height: 150px;
+        width: 150px;
+    }
+
+    .btn-mic {
+        height: 150px;
+        width: 150px;
     }
 }
