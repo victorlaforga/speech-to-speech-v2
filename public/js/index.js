@@ -365,6 +365,7 @@ async function startSpeechRecognition() {
 
     recognition.onerror = function (event) {
         console.log(event);
+        recognition.start();
     }
 }
 
