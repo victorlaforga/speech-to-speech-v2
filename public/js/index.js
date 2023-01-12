@@ -145,6 +145,7 @@ const SpeechGrammarList = window.SpeechGrammarList || webkitSpeechGrammarList;
 const SpeechRecognitionEvent = window.SpeechRecognitionEvent || webkitSpeechRecognitionEvent;
 const recognition = new SpeechRecognition();
 const speechRecognitionList = new SpeechGrammarList();
+
 recognition.grammars = speechRecognitionList;
 recognition.continuous = false;
 recognition.lang = 'nl-NL';
@@ -221,6 +222,7 @@ async function speak(text) {
     });
 
 }
+let matchFound = false;
 
 async function startSpeechRecognition() {
     recognition.onresult = async function (event) {
@@ -230,7 +232,6 @@ async function startSpeechRecognition() {
         // response.value = response.value + "\n" + speechResult;
 
         let splitText = speechResult.split(" ");
-        let matchFound = false;
 
         for (let j = 0; j < splitText.length; j++) {
 
@@ -360,7 +361,9 @@ async function startSpeechRecognition() {
         document.getElementById("mic").classList.remove("fa-microphone");
         isSpeaking = false;
         isListening = false;
-        recognition.stop();
+        if (!matchFound) {
+            recognition.start();
+        }
     }
 
     recognition.onerror = function (event) {
@@ -417,10 +420,8 @@ document.onkeypress = function (e) {
     if (isSpeaking) return;
     e = e || window.event;
     let el = document.getElementsByClassName('chat-box')[0];
-    console.log(el);
     let isOpen = window.getComputedStyle(el).visibility === "visible" ? true : false;
-    console.log(isOpen);
-    if (e.keyCode == 32 && isOpen && !isSpeaking) {
+    if (e.keyCode == 77 && isOpen && !isSpeaking) {
         document.getElementById("mic").click();
     }
 }
