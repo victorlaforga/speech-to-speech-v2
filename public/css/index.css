@@ -7,13 +7,26 @@ body {
     font-family: Raleway;
 }
 
+.grid-container {
+    display: grid;
+    height: 100vh;
+    grid-template-columns: 1;
+}
+
+.grid-item {
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(0, 0, 0, 0.8);
+    padding: 20px;
+    font-size: 30px;
+    text-align: start;
+}
+
 .start-btn {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.005);
-    width: 200px;
-    position: fixed;
-    left: 50%;
-    top: 50%;
-
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    border: none;
 }
 
 .chat-box {
@@ -55,7 +68,6 @@ body {
     font-family: ubuntu;
     font-weight: 400;
     float: left;
-    position: absolute;
     left: 25px;
 }
 
@@ -79,7 +91,6 @@ body {
 }
 
 .chat-box-body-send {
-    width: 250px;
     float: right;
     background: white;
     padding: 10px 20px;
@@ -89,14 +100,23 @@ body {
 }
 
 .btn-mic {
-    height: max-content;
-    width: max-content;
+    width: 150px;
+    height: 150px;
     border: none;
-    padding: 0 0px 10% 50%;
-    font-size: 18px;
-    background: white;
+    font-size: 14px;
+    background: orange;
     cursor: pointer;
+    display: block;
+    border-radius: 50%;
+    margin-left: 30%;
 }
+
+.btn-mic i {
+    background: orange;
+    flex: 1 1 auto;
+    flex-direction: column;
+}
+
 
 .chat-box-body-send p {
     margin: 0;
@@ -140,8 +160,12 @@ body {
 }
 
 .chat-box-footer {
+    flex: 1 1 auto;
     position: relative;
     display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
 }
 
 
@@ -168,13 +192,7 @@ body {
     outline: none;
 }
 
-.chat-box-footer .send {
-    vertical-align: middle;
-    align-items: center;
-    justify-content: center;
-    transform: translate(0px, 20px);
-    cursor: pointer;
-}
+
 
 .chat-button {
     padding: 25px 16px;
@@ -315,5 +333,17 @@ body {
     100% {
         opacity: 1;
         transform: translateY(0px);
+    }
+}
+
+@media only screen and (max-width: 450px) {
+    .start-btn {
+        height: 150px;
+        width: 150px;
+    }
+
+    .btn-mic {
+        height: 150px;
+        width: 150px;
     }
 }
