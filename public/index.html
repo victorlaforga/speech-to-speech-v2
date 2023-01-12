@@ -14,17 +14,10 @@
 </head>
 
 <body>
-    <div class="grid-container">
-        <div class="grid-item">
-            <button class="start-btn" onclick="welcomeMessage()" tabindex="0"> Start </button>
-            <button class="btn-mic">
-                Microfoon aan/uit met spatiebalk
-                <i class="send btn-white btn-animate fa-solid fa-microphone-slash" id="mic"></i>
-            </button>
-        </div>
+    <button arial-label='Start Chatbot' class="start-btn" onclick="welcomeMessage()" tabindex="0"> Klik en start de
+        online winkelervaring nu </button>
 
-    </div>
-    <div class="chat-box">
+    <div class="chat-box" role="main">
         <div class="chat-box-header">
             <h3>Bericht ons</h3>
             <p>
@@ -43,20 +36,21 @@
         </div>
     </div>
 
-    <div class="chat-button">
+    <div class="chat-button" role="button">
         <span tabindex="1"></span>
     </div>
 
-
-
-    <div class="modal">
+    <div class="modal" role="region">
         <div class="modal-content">
             <span class="modal-close-button">&times;</span>
             <h1>Sluiten</h1>
         </div>
     </div>
     <audio src="" style="display:hidden;"></audio>
-
+    <button class="btn-mic" role="button" aria-label="Start microphone">
+        Microfoon aan/uit
+        <i class="send btn-white btn-animate fa-solid fa-microphone-slash" id="mic"></i>
+    </button>
 </body>
 
 <script src="/js/index.js" defer></script>
