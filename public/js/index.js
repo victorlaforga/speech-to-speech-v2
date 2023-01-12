@@ -108,6 +108,7 @@ function appendUserMessage(message) {
 }
 
 function welcomeMessage() {
+    // http://localhost:3000
     setTimeout(async () => {
         let url = `https://speech-to-speech-chatbot.netlify.app/audio-files/music.mp3`
         let audio = new Audio(url);
@@ -122,11 +123,6 @@ function welcomeMessage() {
             speakAudio1.play();
             speakAudio1.addEventListener('ended', function () {
                 speakAudio2.play();
-            });
-            speakAudio2.addEventListener('ended', function () {
-                isSpeaking = false;
-                document.getElementsByClassName('btn-mic')[0].click()
-
             });
             let interval = setInterval(() => {
                 audio.volume -= 0.01;
@@ -145,7 +141,6 @@ const SpeechGrammarList = window.SpeechGrammarList || webkitSpeechGrammarList;
 const SpeechRecognitionEvent = window.SpeechRecognitionEvent || webkitSpeechRecognitionEvent;
 const recognition = new SpeechRecognition();
 const speechRecognitionList = new SpeechGrammarList();
-
 recognition.grammars = speechRecognitionList;
 recognition.continuous = false;
 recognition.lang = 'nl-NL';
@@ -177,20 +172,14 @@ let speakText = {
     'notFound': 'audio niet verstaan.mp3',
     'backgroundMusic': 'music.mp3',
 }
-async function playAudio(speakAudio) {
+async function alternateSpeak(speakAudio) {
     return new Promise(resolve => {
         let url = `https://speech-to-speech-chatbot.netlify.app/audio-files/${speakText[speakAudio]}`
         let audio = new Audio(url);
         audio.play();
         audio.onended = () => {
+            isSpeaking = false;
             return resolve();
-        }
-    })
-}
-async function alternateSpeak(speakAudio, isStart) {
-    await playAudio(speakAudio).then(() => {
-        if (isStart) {
-            recognition.start();
         }
     })
 }
@@ -222,7 +211,6 @@ async function speak(text) {
     });
 
 }
-let matchFound = false;
 
 async function startSpeechRecognition() {
     recognition.onresult = async function (event) {
@@ -232,6 +220,7 @@ async function startSpeechRecognition() {
         // response.value = response.value + "\n" + speechResult;
 
         let splitText = speechResult.split(" ");
+        let matchFound = false;
 
         for (let j = 0; j < splitText.length; j++) {
 
@@ -243,7 +232,7 @@ async function startSpeechRecognition() {
                 apiCall.maten = maten[splitText[j]];
                 createChatBotMessage(utterThis.text);
                 recognition.stop();
-                await alternateSpeak('speakAudio3', true)
+                await alternateSpeak('speakAudio3');
                 matchFound = true;
                 filterBy.size = true;
                 isSelectingSize = true;
@@ -261,19 +250,19 @@ async function startSpeechRecognition() {
                 }
 
                 isSpeaking = true;
-                await alternateSpeak('speakAudio4', false)
+                await alternateSpeak('speakAudio4');
 
                 isSpeaking = true;
-                await alternateSpeak('productAudio1', false);
+                await alternateSpeak('productAudio1');
 
                 isSpeaking = true;
-                await alternateSpeak('productAudio2', false);
+                await alternateSpeak('productAudio2');
 
                 isSpeaking = true;
-                await alternateSpeak('productAudio3', false);
+                await alternateSpeak('productAudio3');
                 utterThis.text = `Welk product nummer wil je bekijken?`;
                 createChatBotMessage(utterThis.text);
-                await alternateSpeak('speakAudio5', true)
+                await alternateSpeak('speakAudio5');
                 apiCall.maten = maten[splitText[j]];
                 matchFound = true;
                 productFound = true;
@@ -285,7 +274,7 @@ async function startSpeechRecognition() {
                 recognition.stop();
 
                 isSpeaking = true;
-                await alternateSpeak('speakAudio6', true)
+                await alternateSpeak('speakAudio6');
                 filterBy.color = true;
                 matchFound = true;
             }
@@ -300,20 +289,20 @@ async function startSpeechRecognition() {
                 }
                 utterThis.text = `Welk product nummer wil je bekijken?`;
                 isSpeaking = true;
-                await alternateSpeak('speakAudio4', false)
+                await alternateSpeak('speakAudio4');
 
                 isSpeaking = true;
-                await alternateSpeak('productAudio1', false);
+                await alternateSpeak('productAudio1');
 
                 isSpeaking = true;
-                await alternateSpeak('productAudio2', false);
+                await alternateSpeak('productAudio2');
 
                 isSpeaking = true;
-                await alternateSpeak('productAudio3', false);
+                await alternateSpeak('productAudio3');
                 createChatBotMessage(utterThis.text);
 
                 isSpeaking = true;
-                await alternateSpeak('speakAudio7', true)
+                await alternateSpeak('speakAudio7');
                 apiCall.kleuren = kleuren[splitText[j]];
                 matchFound = true;
                 productFound = true;
@@ -325,7 +314,7 @@ async function startSpeechRecognition() {
                 createChatBotMessage(utterThis.text);
 
                 isSpeaking = true;
-                await alternateSpeak('speakAudio8', true)
+                await alternateSpeak('speakAudio8');
                 recognition.stop();
                 matchFound = true;
             }
@@ -337,7 +326,7 @@ async function startSpeechRecognition() {
                 createChatBotMessage(utterThis.text);
 
                 isSpeaking = true;
-                await alternateSpeak('speakAudio9', true);
+                await alternateSpeak('speakAudio9');
                 recognition.stop();
                 exit = true;
                 matchFound = true;
@@ -350,25 +339,20 @@ async function startSpeechRecognition() {
             createChatBotMessage(utterThis.text);
             // Audio file is not given for this step
             // await speak(utterThis);
-            await alternateSpeak('notFound', true)
+            await alternateSpeak('notFound')
             matchFound = false;
         }
     }
 
     recognition.onspeechend = function () {
-        console.log('Speech ended');
+        recognition.stop();
         document.getElementById("mic").classList.add("fa-microphone-slash");
         document.getElementById("mic").classList.remove("fa-microphone");
-        isSpeaking = false;
         isListening = false;
-        if (!matchFound) {
-            recognition.start();
-        }
     }
 
     recognition.onerror = function (event) {
-        console.log(event);
-        recognition.start();
+
     }
 }
 
@@ -390,7 +374,7 @@ $('.chat-button').on('click', async function () {
 
 });
 
-document.getElementsByClassName("btn-mic")[0].onclick = async () => {
+document.getElementById("mic").onclick = async () => {
     if (isSpeaking) return;
     if (document.getElementById("mic").classList.contains("fa-microphone")) {
         document.getElementById("mic").classList.remove("fa-microphone");
@@ -421,7 +405,8 @@ document.onkeypress = function (e) {
     e = e || window.event;
     let el = document.getElementsByClassName('chat-box')[0];
     let isOpen = window.getComputedStyle(el).visibility === "visible" ? true : false;
-    if (e.keyCode == 77 && isOpen && !isSpeaking) {
+    console.log(isOpen);
+    if (e.keyCode == 109 && isOpen && !isSpeaking) {
         document.getElementById("mic").click();
     }
 }
