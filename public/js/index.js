@@ -69,8 +69,6 @@ let altTekstenProductAfbeeldingen = [
     "2 - Nylon Sports Sweater: Deze nylon sporttrui wordt je nieuwe favoriete item tijdens het stelen van de show tijdens een workout buiten of tijdens een drankje. Sportief en layback qua pasvorm, stijlvol qua uiterlijk, met ons DS logo op de borst en Dolly logo op de rug. Een verborgen zak is toegevoegd in de zijnaad om je waardevolle spullen te bewaren tijdens de training. Combineer met de Classic trackpants of de Active Sportslegging. Het model draagt maat small en is 1m77.",
     "3 - Team Dolly Trackpants: De DS joggingbroek is een klassieker in je garderobe. Draag hem thuis, naar de sportschool of in de stad. Voorzien van heupzakken, DS-borduursel en een elastische tailleband met een flexibel trekkoord voor een comfortabele pasvorm. Combineer hem met het DS sweatshirt voor de volledige Dolly-look of mix hem. Rol de broekspijpen op als de lengte te lang is of combineer hem met onze DS-sokken. Dit kledingstuk is geverfd waardoor het na verloop van tijd een verwassen, vintage look krijgt. Het model is 1,75 en draagt maat S. 100% katoen, binnenstebuiten wassen op max 40 graden, niet strijken, lage temperatuur drogen. Dit is een limited edition en wordt binnen 48 uur naar u verzonden. Omdat we een limited edition merk zijn hebben we geen voorraad. Daarom kunnen we niet altijd een omruiling in maat of kleur honoreren.",
     "Welk product nummer wil je bekijken?"
-
-
 ]
 let productKeys = {
     "1": "1",
@@ -110,7 +108,6 @@ function appendUserMessage(message) {
 }
 
 function welcomeMessage() {
-    // http://localhost:3000
     setTimeout(async () => {
         let url = `https://speech-to-speech-chatbot.netlify.app/audio-files/music.mp3`
         let audio = new Audio(url);
@@ -123,8 +120,13 @@ function welcomeMessage() {
             speakAudio1.volume = 1.0;
             speakAudio2.volume = 1.0;
             speakAudio1.play();
-            speakAudio1.addEventListener('ended', function() {
+            speakAudio1.addEventListener('ended', function () {
                 speakAudio2.play();
+            });
+            speakAudio2.addEventListener('ended', function () {
+                isSpeaking = false;
+                document.getElementsByClassName('btn-mic')[0].click()
+
             });
             let interval = setInterval(() => {
                 audio.volume -= 0.01;
@@ -134,13 +136,6 @@ function welcomeMessage() {
             }, 50);
         }, 10000);
     }, 0);
-    
-    
-    
-    
-    
-
-
 }
 
 
@@ -150,6 +145,7 @@ const SpeechGrammarList = window.SpeechGrammarList || webkitSpeechGrammarList;
 const SpeechRecognitionEvent = window.SpeechRecognitionEvent || webkitSpeechRecognitionEvent;
 const recognition = new SpeechRecognition();
 const speechRecognitionList = new SpeechGrammarList();
+
 recognition.grammars = speechRecognitionList;
 recognition.continuous = false;
 recognition.lang = 'nl-NL';
@@ -181,13 +177,20 @@ let speakText = {
     'notFound': 'audio niet verstaan.mp3',
     'backgroundMusic': 'music.mp3',
 }
-async function alternateSpeak(speakAudio) {
+async function playAudio(speakAudio) {
     return new Promise(resolve => {
         let url = `https://speech-to-speech-chatbot.netlify.app/audio-files/${speakText[speakAudio]}`
         let audio = new Audio(url);
         audio.play();
         audio.onended = () => {
             return resolve();
+        }
+    })
+}
+async function alternateSpeak(speakAudio, isStart) {
+    await playAudio(speakAudio).then(() => {
+        if (isStart) {
+            recognition.start();
         }
     })
 }
@@ -217,22 +220,9 @@ async function speak(text) {
 
         };
     });
-    // isSpeaking = true;
-    // console.log(text.text);
-    // utterThis.text = text.text;
-    // synth.speak(utterThis);
-    // utterThis.onstart = function (event) {
-    //     console.log("Started speaking");
-    // }
-    // return new Promise(resolve => {
-    //     utterThis.onend = () => {
-    //         synth.cancel();
-    //         isSpeaking = false;
-    //         return resolve();
-    //     };
 
-    // });
 }
+let matchFound = false;
 
 async function startSpeechRecognition() {
     recognition.onresult = async function (event) {
@@ -242,7 +232,6 @@ async function startSpeechRecognition() {
         // response.value = response.value + "\n" + speechResult;
 
         let splitText = speechResult.split(" ");
-        let matchFound = false;
 
         for (let j = 0; j < splitText.length; j++) {
 
@@ -254,7 +243,7 @@ async function startSpeechRecognition() {
                 apiCall.maten = maten[splitText[j]];
                 createChatBotMessage(utterThis.text);
                 recognition.stop();
-                await alternateSpeak('speakAudio3');
+                await alternateSpeak('speakAudio3', true)
                 matchFound = true;
                 filterBy.size = true;
                 isSelectingSize = true;
@@ -269,16 +258,22 @@ async function startSpeechRecognition() {
                 for (let i = 0; i < altTekstenProductAfbeeldingen.length; i++) {
                     utterThis.text = altTekstenProductAfbeeldingen[i];
                     createChatBotMessage(utterThis.text);
-                    // Do we need to speak the product name?
-                    // await speak(utterThis);
                 }
-                await alternateSpeak('speakAudio4');
-                await alternateSpeak('productAudio1');
-                await alternateSpeak('productAudio2');
-                await alternateSpeak('productAudio3');
+
+                isSpeaking = true;
+                await alternateSpeak('speakAudio4', false)
+
+                isSpeaking = true;
+                await alternateSpeak('productAudio1', false);
+
+                isSpeaking = true;
+                await alternateSpeak('productAudio2', false);
+
+                isSpeaking = true;
+                await alternateSpeak('productAudio3', false);
                 utterThis.text = `Welk product nummer wil je bekijken?`;
                 createChatBotMessage(utterThis.text);
-                await alternateSpeak('speakAudio5');
+                await alternateSpeak('speakAudio5', true)
                 apiCall.maten = maten[splitText[j]];
                 matchFound = true;
                 productFound = true;
@@ -288,7 +283,9 @@ async function startSpeechRecognition() {
                 utterThis.text = `Wij hebben deze mooie zomer kleuren voor je gevonden naar welke kleur gaat je voorkeur naar uit? De kleuren zijn: rood, groen, geel, paars of lila`;
                 createChatBotMessage(utterThis.text);
                 recognition.stop();
-                await alternateSpeak('speakAudio6');
+
+                isSpeaking = true;
+                await alternateSpeak('speakAudio6', true)
                 filterBy.color = true;
                 matchFound = true;
             }
@@ -296,33 +293,39 @@ async function startSpeechRecognition() {
                 // List the products
                 utterThis.text = `We hebben 3 producten voor je gevonden.`;
                 createChatBotMessage(utterThis.text);
-                // Audio file is not given for this step
-                // await speak(utterThis);
 
                 for (let i = 0; i < altTekstenProductAfbeeldingen.length; i++) {
                     utterThis.text = altTekstenProductAfbeeldingen[i];
                     createChatBotMessage(utterThis.text);
-                    // Audio file is not given for this step
-                    // await speak(utterThis);
                 }
                 utterThis.text = `Welk product nummer wil je bekijken?`;
-                await alternateSpeak('speakAudio4');
-                await alternateSpeak('productAudio1');
-                await alternateSpeak('productAudio2');
-                await alternateSpeak('productAudio3');
+                isSpeaking = true;
+                await alternateSpeak('speakAudio4', false)
+
+                isSpeaking = true;
+                await alternateSpeak('productAudio1', false);
+
+                isSpeaking = true;
+                await alternateSpeak('productAudio2', false);
+
+                isSpeaking = true;
+                await alternateSpeak('productAudio3', false);
                 createChatBotMessage(utterThis.text);
-                await alternateSpeak('speakAudio7');
+
+                isSpeaking = true;
+                await alternateSpeak('speakAudio7', true)
                 apiCall.kleuren = kleuren[splitText[j]];
                 matchFound = true;
                 productFound = true;
-
 
             }
 
             if (speechResult.includes(productKeys[splitText[j]]) || altTekstenProductAfbeeldingen.includes(splitText) && productFound == true) {
                 utterThis.text = "Top! Wil je naar de productpagina?"
                 createChatBotMessage(utterThis.text);
-                await alternateSpeak('speakAudio8');
+
+                isSpeaking = true;
+                await alternateSpeak('speakAudio8', true)
                 recognition.stop();
                 matchFound = true;
             }
@@ -332,7 +335,9 @@ async function startSpeechRecognition() {
                 // This code only runs if product, size and color is selected by user and the item is available
                 utterThis.text = "Top! Ik breng je naar de productpagina. Ik hoop je fijn geholpen te hebben vandaag, tot snel! Doei doei!"
                 createChatBotMessage(utterThis.text);
-                await alternateSpeak('speakAudio9');
+
+                isSpeaking = true;
+                await alternateSpeak('speakAudio9', true);
                 recognition.stop();
                 exit = true;
                 matchFound = true;
@@ -345,20 +350,25 @@ async function startSpeechRecognition() {
             createChatBotMessage(utterThis.text);
             // Audio file is not given for this step
             // await speak(utterThis);
-            await alternateSpeak('notFound')
+            await alternateSpeak('notFound', true)
             matchFound = false;
         }
     }
 
     recognition.onspeechend = function () {
-        recognition.stop();
+        console.log('Speech ended');
         document.getElementById("mic").classList.add("fa-microphone-slash");
         document.getElementById("mic").classList.remove("fa-microphone");
+        isSpeaking = false;
         isListening = false;
+        if (!matchFound) {
+            recognition.start();
+        }
     }
 
     recognition.onerror = function (event) {
-
+        console.log(event);
+        recognition.start();
     }
 }
 
@@ -380,7 +390,7 @@ $('.chat-button').on('click', async function () {
 
 });
 
-document.getElementById("mic").onclick = async () => {
+document.getElementsByClassName("btn-mic")[0].onclick = async () => {
     if (isSpeaking) return;
     if (document.getElementById("mic").classList.contains("fa-microphone")) {
         document.getElementById("mic").classList.remove("fa-microphone");
@@ -409,7 +419,9 @@ $('.chat-box .chat-box-header p').on('click', function () {
 document.onkeypress = function (e) {
     if (isSpeaking) return;
     e = e || window.event;
-    if (e.keyCode == 32) {
+    let el = document.getElementsByClassName('chat-box')[0];
+    let isOpen = window.getComputedStyle(el).visibility === "visible" ? true : false;
+    if (e.keyCode == 77 && isOpen && !isSpeaking) {
         document.getElementById("mic").click();
     }
 }
