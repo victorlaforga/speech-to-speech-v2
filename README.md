@@ -11,7 +11,7 @@ Before you start, you need to have npm installed on your machine. You can downlo
 ## Installation
 1. Clone this repository to your local machine using the following command:
 ```
-https://github.com/victorlaforga/speech-to-speech-v2
+git clone https://github.com/victorlaforga/speech-to-speech-v2
 ```
 
 2. Navigate to the root directory of the cloned repository:
