@@ -1,5 +1,5 @@
 # Speech to speech chatbot 
-
+The code is server side. So it is not meant to be used locally. In the node-index.js file you have the possibility to change the port variable. It is now set on 3000. Netlify link will not work so you can run your product locally.
 
 # How to run the project?
 
