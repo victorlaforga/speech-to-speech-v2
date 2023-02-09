@@ -1,6 +1,7 @@
 # Speech to speech chatbot 
-The code is server side. So it is not meant to be used locally. In the node-index.js file you have the possibility to change the port variable. It is now set on 3000. Netlify link will not work so you can run your product locally.
+The code is server side. So it is not meant to be used locally. In the node-index.js file you have the possibility to change the port variable. It is now set on 3000. If you change this you need to change the absolute links also in the index.js file. Netlify deployment link will not work so you can run your product locally.
 
+Node versie: 18.12.1
 # How to run the project?
 
 This project is designed to be run using npm, a package manager for JavaScript projects. In this README, you will find the steps necessary to run the project on your local machine.
